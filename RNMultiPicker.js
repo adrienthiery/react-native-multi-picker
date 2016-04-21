@@ -3,6 +3,7 @@ import React, {
     View,
     Picker,
     TouchableHighlight,
+    TouchableWithoutFeedBack,
     Text,
     Dimensions,
     StyleSheet
@@ -50,7 +51,7 @@ export default class CustomPicker extends Component {
 
         optionLists.forEach((optionList) => {
             selections[optionList.name] = optionList.options[0].value;
-            
+
             optionList.options.forEach((option) => {
                 if (optionList.defaultLabel && optionList.defaultLabel === option.label) {
                     selections[optionList.name] = option.value;
@@ -183,39 +184,41 @@ export default class CustomPicker extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <View style={[
-                    styles.popup,
-                    {
-                        width: WIN.width - (2 * this.props.padding), borderWidth: this.props.borderWidth
-                    },
-                    this.getOptionalStyle('popup')
-                ]}
-                >
-                    {this.renderPrompt()}
-                    <View style={styles.pickerContainer}>
-                        {this.renderPickers(this.state.optionLists)}
-                    </View>
-                    <View style={styles.buttonContainer}>
-                        <View style={styles.buttonWrapper}>
-                            <TouchableHighlight
-                                style={[styles.button, styles.cancel, this.getOptionalStyle('cancel')]}
-                                onPress={this.props.onCancel}
-                                underlayColor={'lightgray'}
-                            >
-                                <Text allowFontScaling={this.props.allowFontScaling} style={styles.buttonText}>{this.props.cancelText}</Text>
-                            </TouchableHighlight>
+                <TouchableWithoutFeedBack onPress={this.props.onOutsidePress}>
+                    <View style={[
+                        styles.popup,
+                        {
+                            width: WIN.width - (2 * this.props.padding), borderWidth: this.props.borderWidth
+                        },
+                        this.getOptionalStyle('popup')
+                    ]}
+                    >
+                        {this.renderPrompt()}
+                        <View style={styles.pickerContainer}>
+                            {this.renderPickers(this.state.optionLists)}
                         </View>
-                        <View style={styles.buttonWrapper}>
-                            <TouchableHighlight
-                                onPress={this.handlePressDone}
-                                style={[styles.button, styles.done, this.getOptionalStyle('done')]}
-                                underlayColor={'lightgray'}
-                            >
-                                <Text allowFontScaling={this.props.allowFontScaling} style={styles.buttonText}>{this.props.doneText}</Text>
-                            </TouchableHighlight>
+                        <View style={styles.buttonContainer}>
+                            <View style={styles.buttonWrapper}>
+                                <TouchableHighlight
+                                    style={[styles.button, styles.cancel, this.getOptionalStyle('cancel')]}
+                                    onPress={this.props.onCancel}
+                                    underlayColor={'lightgray'}
+                                >
+                                    <Text allowFontScaling={this.props.allowFontScaling} style={styles.buttonText}>{this.props.cancelText}</Text>
+                                </TouchableHighlight>
+                            </View>
+                            <View style={styles.buttonWrapper}>
+                                <TouchableHighlight
+                                    onPress={this.handlePressDone}
+                                    style={[styles.button, styles.done, this.getOptionalStyle('done')]}
+                                    underlayColor={'lightgray'}
+                                >
+                                    <Text allowFontScaling={this.props.allowFontScaling} style={styles.buttonText}>{this.props.doneText}</Text>
+                                </TouchableHighlight>
+                            </View>
                         </View>
                     </View>
-                </View>
+                </TouchableWithoutFeedBack>
             </View>
         );
     }
@@ -246,6 +249,12 @@ CustomPicker.propTypes = {
             )
         })
     ).isRequired,
+    /**
+     * onOutsidePress
+     *
+     *      Callback function to be called if the user presses outside of the modal
+     */
+    onOutsidePress: React.PropTypes.func,
     /**
      * onDone
      *     Callback function that will be passed the selections object when the user presses done
